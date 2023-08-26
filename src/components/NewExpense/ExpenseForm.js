@@ -10,7 +10,7 @@ const ExpenseForm = (props) => {
     const expenseData = {
       title: enteredTitle,
       amount: enteredAmount,
-      date: enteredDate,
+      date: new Date(enteredDate),
     };
     props.onSaveExpenseData(expenseData);
     setEnteredTitle("");
@@ -31,25 +31,25 @@ const ExpenseForm = (props) => {
   };
   return (
     <form onSubmit={handleSubmit}>
-      <div className="flex flex-wrap gap-[1rem] mb-[1rem] justify-between  text-left">
+      <div className="flex flex-wrap gap-[1rem] mb-[1rem] justify-between  text-left p-5">
         <div className="">
           <label className="font-bold mb-[0.5rem] block text-lg">Title</label>
           <input
             type="text"
             onChange={handleChangeTitle}
             value={enteredTitle}
-            className="font-inherit p-[0.5rem] rounded-lg border-2 border-[#ccc] w-[20rem] max-w-[100%]"
+            className="font-inherit p-[0.7rem] rounded-lg border-2 border-[#ccc] w-[20rem] max-w-[100%]"
           />
         </div>
         <div>
-          <label className="font-bold mb-[0.5rem] block text-lg">Amount</label>
+          <label className="font-bold mb-[0.7rem] block text-lg">Amount</label>
           <input
             type="number"
             min="0.01"
             step="0.01"
             value={enteredAmount}
             onChange={handleChangeAmount}
-            className="font-inherit p-[0.5rem] rounded-lg border-2 border-[#ccc] w-[20rem] max-w-[100%]"
+            className="font-inherit p-[0.7rem] rounded-lg border-2 border-[#ccc] w-[20rem] max-w-[100%]"
           />
         </div>
         <div>
@@ -64,7 +64,7 @@ const ExpenseForm = (props) => {
           />
         </div>
       </div>
-      <div className="text-right">
+      <div className="text-right px-5">
         <button
           type="submit"
           className="bg-[#40005d] p-[1rem_2rem] rounded-lg text-white"
