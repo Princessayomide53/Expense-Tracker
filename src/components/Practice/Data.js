@@ -4,13 +4,13 @@ const Data = (props) => {
   return (
     <div>
       <ul className="max-w-[50%] m-auto">
-        {props.item.map((items) => (
+        {props.item.map((users) => (
           <div
             className="flex justify-between border-2 border-zinc-300 bg-pink-700 rounded-2xl h-12 text-white font-bold p-3"
-            key={items.id}
+            key={users.id}
           >
-            <li>Name: {items.Name}</li>
-            <li>Age: {items.Age}</li>
+            <li>Name: {users.Username}</li>
+            <li>Age: {users.Age}</li>
           </div>
         ))}
       </ul>
