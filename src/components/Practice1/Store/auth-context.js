@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
-import MainHeader from "./MainHeader/MainHeader";
-import Login from "./Login/Login";
-import Home from "./Home/Home";
-import AuthContext from "./Store/auth-context";
+import React, { useEffect, useState } from "react";
 
-const Main = () => {
+const AuthContext = React.createContext({
+  isLoggedIn: false,
+  onLogout: (email, password) => {},
+});
+export default AuthContext;
+
+export const AuthContextProvider = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -25,15 +27,13 @@ const Main = () => {
   };
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn: isLoggedIn, onLogout: logoutHandler }}
+      value={{
+        isLoggedIn: isLoggedIn,
+        onLogout: logoutHandler,
+        onLogin: loginHandler,
+      }}
     >
-      <MainHeader />
-      <main>
-        {!isLoggedIn && <Login onLogin={loginHandler} />}
-        {isLoggedIn && <Home onLogout={logoutHandler} />}
-      </main>
+      {props.children}
     </AuthContext.Provider>
   );
 };
-
-export default Main;

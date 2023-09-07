@@ -18,7 +18,7 @@ const passwordReducer = (state, action) => {
   }
 
   if (action.type === "INPUT_BLUR") {
-    return { value: state.val, isValid: state.val.trim().length > 6 };
+    return { value: state.value, isValid: state.value.trim().length > 6 };
   }
   return { value: "", isValid: false };
 };
@@ -45,10 +45,7 @@ const Login = (props) => {
   useEffect(() => {
     const identifier = setTimeout(() => {
       console.log("checking for validity");
-      setFormIsValid(
-        emailIsValid.value.includes("@") &&
-          passwordIsValid.value.trim().length > 6
-      );
+      setFormIsValid(emailIsValid && passwordIsValid);
     }, 500);
     //clear timeout on unmounting component
     return () => {
@@ -58,13 +55,13 @@ const Login = (props) => {
   }, [emailIsValid, passwordIsValid]);
 
   const emailHandler = (e) => {
-    emailState({ type: "USER_INPUT", val: e.target.value });
+    dispatchEmail({ type: "USER_INPUT", val: e.target.value });
     // setFormIsValid();
     // e.target.value.includes("@") && enteredPassword.trim().length > 6
   };
 
   const passwordHandler = (e) => {
-    passwordState({ type: "USER_INPUT", val: e.target.value });
+    dispatchPassword({ type: "USER_INPUT", val: e.target.value });
     // setFormIsValid();
     // e.target.value.trim().length > 6 && enteredEmail.includes("@");
   };
