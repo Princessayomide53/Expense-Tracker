@@ -1,12 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import { Expense } from "./components/Expenses/Expense";
 import NewExpense from "./components/NewExpense/NewExpense";
 import Forms from "./components/Practice/Forms";
 import Data from "./components/Practice/Data";
-import MainHeader from "./components/Practice1/MainHeader/MainHeader";
-import Login from "./components/Practice1/Login/Login";
-import Home from "./components/Practice1/Home/Home";
+import Main from "./components/Practice1/Main";
 // import Form from "./components/Practice/Form";
 
 const initial_Expenses = [
@@ -42,8 +40,6 @@ const initial_Expenses = [
 // ];
 function App() {
   const [expenses, setExpenses] = useState(initial_Expenses);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   const [data, setData] = useState([]);
 
   const addData = (Uname, Uage) => {
@@ -61,14 +57,6 @@ function App() {
     });
   };
 
-  const loginHandler = () => {
-    setIsLoggedIn(true);
-  };
-
-  const logoutHandler = () => {
-    setIsLoggedIn(false);
-  };
-
   return (
     <div className="">
       <NewExpense onAddExpense={addExpenseHandler} />
@@ -76,13 +64,7 @@ function App() {
       <Forms onAddData={addData} />
       <Data item={data} />
 
-      <div>
-        <MainHeader isAuthenticated={isLoggedIn} onLogout={logoutHandler} />
-        <main>
-          {!isLoggedIn && <Login onLogin={loginHandler} />}
-          {isLoggedIn && <Home onLogout={logoutHandler} />}
-        </main>
-      </div>
+      <Main />
     </div>
   );
 }

@@ -10,6 +10,7 @@ const Wrapper = (props) => {
     console.log(data);
     props.onAddData(data);
   };
+
   return (
     <div>
       <Forms onAddSave={saveData} />

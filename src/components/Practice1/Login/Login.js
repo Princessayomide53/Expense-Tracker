@@ -1,40 +1,92 @@
-import React, { useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import Card1 from "../../UI/Card1";
 import Button from "../../UI/Button";
 
+const emailReducer = (state, action) => {
+  if (action.type === "USER_INPUT") {
+    return { value: action.val, isValid: action.val.includes("@") };
+  }
+  if (action.type === "INPUT_BLUR") {
+    return { value: state.val, isValid: state.val.includes("@") };
+  }
+  return { value: "", isValid: false };
+};
+
+const passwordReducer = (state, action) => {
+  if (action.type === "USER_INPUT") {
+    return { value: action.val, isValid: action.val.trim().length > 6 };
+  }
+
+  if (action.type === "INPUT_BLUR") {
+    return { value: state.val, isValid: state.val.trim().length > 6 };
+  }
+  return { value: "", isValid: false };
+};
+
 const Login = (props) => {
   const [formIsValid, setFormIsValid] = useState(false);
-  const [enteredEmail, setEnteredEmail] = useState("");
-  const [emailValid, setEmailValid] = useState();
-  const [enteredPassword, setEnteredPassword] = useState("");
-  const [passwordValid, setPasswordValid] = useState();
+
+  // const {enteredEmail, setEnteredEmail] = useState("");
+  // const [emailValid, setEmailValid] = useState();
+  // const [enteredPassword, setEnteredPassword] = useState("");
+  // const [passwordValid, setPasswordValid] = useState();
+
+  const [emailState, dispatchEmail] = useReducer(emailReducer, {
+    value: "",
+    isValid: null,
+  });
+  const [passwordState, dispatchPassword] = useReducer(passwordReducer, {
+    Value: "",
+    isValid: null,
+  });
+  const { isValid: emailIsValid } = emailState;
+  const { isValid: passwordIsValid } = passwordState;
+
+  useEffect(() => {
+    const identifier = setTimeout(() => {
+      console.log("checking for validity");
+      setFormIsValid(
+        emailIsValid.value.includes("@") &&
+          passwordIsValid.value.trim().length > 6
+      );
+    }, 500);
+    //clear timeout on unmounting component
+    return () => {
+      clearTimeout(identifier);
+      console.log("unmounted");
+    };
+  }, [emailIsValid, passwordIsValid]);
 
   const emailHandler = (e) => {
-    setEnteredEmail(e.target.value);
-    setFormIsValid(
-      e.target.value.includes("@") && enteredPassword.trim().length > 6
-    );
+    emailState({ type: "USER_INPUT", val: e.target.value });
+    // setFormIsValid();
+    // e.target.value.includes("@") && enteredPassword.trim().length > 6
   };
 
   const passwordHandler = (e) => {
-    setEnteredPassword(e.target.value);
-    setFormIsValid(
-      e.target.value.trim().length > 6 && enteredEmail.includes("@")
-    );
+    passwordState({ type: "USER_INPUT", val: e.target.value });
+    // setFormIsValid();
+    // e.target.value.trim().length > 6 && enteredEmail.includes("@");
   };
 
   const validateEmail = () => {
-    setEmailValid(enteredEmail.includes("@"));
+    dispatchEmail({ type: "INPUT_BLUR" });
+    // setEmailValid(enteredEmail.includes("@"));
   };
 
   const validatePassword = () => {
-    setPasswordValid(enteredPassword.trim().length > 6);
+    dispatchPassword({ type: "INPUT_BLUR" });
   };
 
   const submitForm = (e) => {
     e.preventDefault();
-    props.onLogin(enteredEmail, enteredPassword);
+    props.onLogin(emailState.value, passwordState.value);
     // console.log(enteredEmail, enteredPassword);
+    // setEnteredEmail("");
+    // setEnteredPassword("");
+    // setEmailValid(undefined);
+    // setPasswordValid(undefined);
+    // setFormIsValid(false);
   };
 
   return (
@@ -48,9 +100,9 @@ const Login = (props) => {
             <input
               type="email"
               id="email"
-              value={enteredEmail}
+              value={emailState.value}
               className={`w-[80%] rounded-lg py-2 pl-3 border-2 border-purple-400 ${
-                emailValid === false
+                emailState.isValid === false
                   ? "border-red-600 border-2 focus:bg-red-500"
                   : ""
               }`}
@@ -65,9 +117,9 @@ const Login = (props) => {
             <input
               type="password"
               id="password"
-              value={enteredPassword}
+              value={passwordState.value}
               className={`w-[80%] rounded-lg py-2 pl-3 border-2 border-purple-400 ${
-                passwordValid === false
+                passwordState.isValid === false
                   ? "border-red-600 border-2 focus:bg-red-500 "
                   : ""
               }`}
