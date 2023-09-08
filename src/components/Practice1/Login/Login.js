@@ -1,13 +1,14 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useContext, useEffect, useReducer, useState } from "react";
 import Card1 from "../../UI/Card1";
 import Button from "../../UI/Button";
+import AuthContext from "../Store/auth-context";
 
 const emailReducer = (state, action) => {
   if (action.type === "USER_INPUT") {
     return { value: action.val, isValid: action.val.includes("@") };
   }
   if (action.type === "INPUT_BLUR") {
-    return { value: state.val, isValid: state.val.includes("@") };
+    return { value: state.value, isValid: state.value.includes("@") };
   }
   return { value: "", isValid: false };
 };
@@ -36,7 +37,7 @@ const Login = (props) => {
     isValid: null,
   });
   const [passwordState, dispatchPassword] = useReducer(passwordReducer, {
-    Value: "",
+    value: "",
     isValid: null,
   });
   const { isValid: emailIsValid } = emailState;
@@ -74,10 +75,11 @@ const Login = (props) => {
   const validatePassword = () => {
     dispatchPassword({ type: "INPUT_BLUR" });
   };
+  const ctx = useContext(AuthContext);
 
   const submitForm = (e) => {
     e.preventDefault();
-    props.onLogin(emailState.value, passwordState.value);
+    ctx.onLogin(emailState.value, passwordState.value);
     // console.log(enteredEmail, enteredPassword);
     // setEnteredEmail("");
     // setEnteredPassword("");
