@@ -1,7 +1,14 @@
-import React, { useContext, useEffect, useReducer, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useReducer,
+  useState,
+  useRef,
+} from "react";
 import Card1 from "../../UI/Card1";
 import Button from "../../UI/Button";
 import AuthContext from "../Store/auth-context";
+import Input from "../Input/Input";
 
 const emailReducer = (state, action) => {
   if (action.type === "USER_INPUT") {
@@ -27,6 +34,8 @@ const passwordReducer = (state, action) => {
 const Login = (props) => {
   const [formIsValid, setFormIsValid] = useState(false);
 
+  const emailInputRef = useRef();
+  const passwordInputRef = useRef();
   // const {enteredEmail, setEnteredEmail] = useState("");
   // const [emailValid, setEmailValid] = useState();
   // const [enteredPassword, setEnteredPassword] = useState("");
@@ -79,58 +88,44 @@ const Login = (props) => {
 
   const submitForm = (e) => {
     e.preventDefault();
-    ctx.onLogin(emailState.value, passwordState.value);
-    // console.log(enteredEmail, enteredPassword);
-    // setEnteredEmail("");
-    // setEnteredPassword("");
-    // setEmailValid(undefined);
-    // setPasswordValid(undefined);
-    // setFormIsValid(false);
+    if (formIsValid) {
+      ctx.onLogin(emailState.value, passwordState.value);
+    } else if (!emailIsValid) {
+      emailInputRef.current.focus();
+    } else {
+      passwordInputRef.current.focus();
+    }
   };
 
   return (
     <Card1 className="max-w-[40rem] w-[50vw] h-64 bg-pink-200 rounded-xl shadow-2xl m-auto">
       <form onSubmit={submitForm}>
         <div className={`flex-col flex p-7 space-y-10`}>
-          <div className={`block space-x-16 `}>
-            <label htmlFor="E-mail" className="font-bold">
-              E-mail
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={emailState.value}
-              className={`w-[80%] rounded-lg py-2 pl-3 border-2 border-purple-400 ${
-                emailState.isValid === false
-                  ? "border-red-600 border-2 focus:bg-red-500"
-                  : ""
-              }`}
-              onChange={emailHandler}
-              onBlur={validateEmail}
-            />
-          </div>
-          <div className={`flex space-x-10`}>
-            <label htmlFor="Password" className="font-bold">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              value={passwordState.value}
-              className={`w-[80%] rounded-lg py-2 pl-3 border-2 border-purple-400 ${
-                passwordState.isValid === false
-                  ? "border-red-600 border-2 focus:bg-red-500 "
-                  : ""
-              }`}
-              onChange={passwordHandler}
-              onBlur={validatePassword}
-            />
-          </div>
+          <Input
+            ref={emailInputRef}
+            type="email"
+            id="email"
+            label="E-mail"
+            isValid={emailState.isValid}
+            stateHandle={emailState.value}
+            onBlur={validateEmail}
+            onChange={emailHandler}
+          />
+          {/* <div className={`flex space-x-10`}> */}
+          <Input
+            ref={passwordInputRef}
+            type="password"
+            id="password"
+            label="Passwo"
+            isValid={passwordState.isValid}
+            stateHandle={passwordState.value}
+            // style={{ margin: "10px" }}
+            onBlur={validatePassword}
+            onChange={passwordHandler}
+          />
         </div>
-        <Button type="submit" disabled={!formIsValid}>
-          {" "}
-          Login
-        </Button>
+        {/* </div> */}
+        <Button type="submit"> Login</Button>
       </form>
     </Card1>
   );
