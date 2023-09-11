@@ -31,11 +31,9 @@ const passwordReducer = (state, action) => {
   return { value: "", isValid: false };
 };
 
-const Login = (props) => {
+const Login = () => {
   const [formIsValid, setFormIsValid] = useState(false);
 
-  const emailInputRef = useRef();
-  const passwordInputRef = useRef();
   // const {enteredEmail, setEnteredEmail] = useState("");
   // const [emailValid, setEmailValid] = useState();
   // const [enteredPassword, setEnteredPassword] = useState("");
@@ -51,6 +49,10 @@ const Login = (props) => {
   });
   const { isValid: emailIsValid } = emailState;
   const { isValid: passwordIsValid } = passwordState;
+  const ctx = useContext(AuthContext);
+
+  const emailInputRef = useRef();
+  const passwordInputRef = useRef();
 
   useEffect(() => {
     const identifier = setTimeout(() => {
@@ -84,8 +86,6 @@ const Login = (props) => {
   const validatePassword = () => {
     dispatchPassword({ type: "INPUT_BLUR" });
   };
-  const ctx = useContext(AuthContext);
-
   const submitForm = (e) => {
     e.preventDefault();
     if (formIsValid) {
@@ -100,11 +100,11 @@ const Login = (props) => {
   return (
     <Card1 className="max-w-[40rem] w-[50vw] h-64 bg-pink-200 rounded-xl shadow-2xl m-auto">
       <form onSubmit={submitForm}>
-        <div className={`flex-col flex p-7 space-y-10`}>
+        <div className={`flex-col flex p-10 space-y-10`}>
           <Input
             ref={emailInputRef}
-            type="email"
             id="email"
+            type="email"
             label="E-mail"
             isValid={emailState.isValid}
             stateHandle={emailState.value}
@@ -114,14 +114,15 @@ const Login = (props) => {
           {/* <div className={`flex space-x-10`}> */}
           <Input
             ref={passwordInputRef}
-            type="password"
             id="password"
-            label="Passwo"
+            type="password"
+            label="Password"
             isValid={passwordState.isValid}
             stateHandle={passwordState.value}
             // style={{ margin: "10px" }}
             onBlur={validatePassword}
             onChange={passwordHandler}
+            // className="space-x-5"
           />
         </div>
         {/* </div> */}
