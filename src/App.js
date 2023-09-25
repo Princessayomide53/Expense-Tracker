@@ -5,6 +5,7 @@ import NewExpense from "./components/NewExpense/NewExpense";
 import Forms from "./components/Practice/Forms";
 import Data from "./components/Practice/Data";
 import Main from "./components/Practice1/Main";
+import MovieList from "./components/Practice2/MovieList";
 // import Form from "./components/Practice/Form";
 
 const initial_Expenses = [
@@ -56,6 +57,20 @@ function App() {
       return [expense, ...prevExpenses];
     });
   };
+  const dummyMovies = [
+    {
+      id: "tt01",
+      title: "Some Dummy Movies",
+      openingText: "this is the opening text of the movie",
+      releaseDate: "2021-05-18",
+    },
+    {
+      id: "tt02",
+      title: "Some Dummy Movies 2",
+      openingText: "this is the second opening text of the movie",
+      releaseDate: "2021-05-19",
+    },
+  ];
 
   return (
     <div className="">
@@ -65,6 +80,16 @@ function App() {
       <Data item={data} />
 
       <Main />
+
+      <section className="bg-green-200 mt-[1rem] mb-10 max-w-[60rem] m-auto p-7 rounded-lg text-center">
+        <button className="text-xl font-semibold px-7 py-2 bg-yellow-200 rounded-2xl">
+          Fetch Movies
+        </button>
+      </section>
+
+      <section className="bg-green-200 h-[30rem] max-w-[60rem] m-auto p-7 rounded-lg text-center">
+        <MovieList movies={dummyMovies} />
+      </section>
     </div>
   );
 }
