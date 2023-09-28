@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./App.css";
 import { Expense } from "./components/Expenses/Expense";
 import NewExpense from "./components/NewExpense/NewExpense";
@@ -42,6 +42,9 @@ const initial_Expenses = [
 function App() {
   const [expenses, setExpenses] = useState(initial_Expenses);
   const [data, setData] = useState([]);
+  const [movies, setMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const addData = (Uname, Uage) => {
     setData((prevData) => {
@@ -57,20 +60,47 @@ function App() {
       return [expense, ...prevExpenses];
     });
   };
-  const dummyMovies = [
-    {
-      id: "tt01",
-      title: "Some Dummy Movies",
-      openingText: "this is the opening text of the movie",
-      releaseDate: "2021-05-18",
-    },
-    {
-      id: "tt02",
-      title: "Some Dummy Movies 2",
-      openingText: "this is the second opening text of the movie",
-      releaseDate: "2021-05-19",
-    },
-  ];
+  // const dummyMovies = [
+  //   {
+  //     id: "tt01",
+  //     title: "Some Dummy Movies",
+  //     openingText: "this is the opening text of the movie",
+  //     releaseDate: "2021-05-18",
+  //   },
+  //   {
+  //     id: "tt02",
+  //     title: "Some Dummy Movies 2",
+  //     openingText: "this is the second opening text of the movie",
+  //     releaseDate: "2021-05-19",
+  //   },
+  // ];
+
+  async function fetchApiHandler() {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch("https://swapi.dev/api/films");
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error("Something is wrong");
+      }
+      const transformedData = data.results.map((movieData) => {
+        return {
+          id: movieData.episode_id,
+          title: movieData.title,
+          openingText: movieData.opening_crawl,
+          releaseDate: movieData.releaseDate,
+        };
+      });
+      setMovies(transformedData);
+      setIsLoading(false);
+    } catch (error) {
+      setError(error.message);
+    }
+  }
+
+  //convert to json
 
   return (
     <div className="">
@@ -82,13 +112,19 @@ function App() {
       <Main />
 
       <section className="bg-green-200 mt-[1rem] mb-10 max-w-[60rem] m-auto p-7 rounded-lg text-center">
-        <button className="text-xl font-semibold px-7 py-2 bg-yellow-200 rounded-2xl">
+        <button
+          onClick={fetchApiHandler}
+          className="text-xl font-semibold px-7 py-2 bg-yellow-200 rounded-2xl"
+        >
           Fetch Movies
         </button>
       </section>
 
-      <section className="bg-green-200 h-[30rem] max-w-[60rem] m-auto p-7 rounded-lg text-center">
-        <MovieList movies={dummyMovies} />
+      <section className="bg-green-200 h-full mb-5 max-w-[60rem] m-auto p-7 rounded-lg text-center">
+        {!isLoading && movies.length === 0 && <p>No Movies found</p>}
+        {!isLoading && movies.length > 0 && <MovieList movie={movies} />}
+        {isLoading && <p>Loading........</p>}
+        {!isLoading && error && <p>{error}</p>}
       </section>
     </div>
   );
