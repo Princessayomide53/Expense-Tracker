@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import { Expense } from "./components/Expenses/Expense";
 import NewExpense from "./components/NewExpense/NewExpense";
@@ -75,7 +75,7 @@ function App() {
   //   },
   // ];
 
-  async function fetchApiHandler() {
+  const fetchApiHandler = useCallback(async () => {
     setIsLoading(true);
     setError(null);
 
@@ -98,7 +98,11 @@ function App() {
     } catch (error) {
       setError(error.message);
     }
-  }
+  });
+
+  useEffect(() => {
+    fetchApiHandler();
+  }, [fetchApiHandler]);
 
   //convert to json
 
